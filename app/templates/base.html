@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3b1f6b">
+  <title>{% block titulo %}{{ APP_NOMBRE }}{% endblock %}</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/static/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tema claro con la paleta del Panel PARKA (celestes, blanco, violeta y turquesa).
+    // Se redefinen los grises "zinc" para que toda la app quede clara sin tocar cada pantalla.
+    tailwind.config = { theme: { extend: { colors: {
+      zinc: { 50:'#ffffff', 100:'#24163f', 200:'#24163f', 300:'#3a2d57', 400:'#5d6a86', 500:'#5d6a86', 600:'#8a96ad',
+              700:'#d3e3f3', 800:'#e3f1fd', 900:'#f5f9fe', 950:'#3b1f6b' },
+      teal: { 300:'#14b8a6', 400:'#0d9488', 500:'#14b8a6', 600:'#0d9488', 700:'#0f766e' },
+      violeta: { DEFAULT:'#3b1f6b', 2:'#5b3a99', bg:'#efe9f8' },
+      red: { 300:'#c8283e', 400:'#c8283e', 700:'#c8283e', 800:'#f3b6bf', 950:'#fde8eb' },
+      amber: { 300:'#b45309', 400:'#b45309', 600:'#f59e0b', 700:'#d97706', 800:'#fcd34d', 950:'#fef3c7' },
+      green: { 400:'#0f766e', 700:'#0d9488', 800:'#99e0d6', 950:'#dff7f3' },
+      sky: { 800:'#2563eb', 950:'#e3edfd' },
+    } } } };
+  </script>
+  <link rel="stylesheet" href="/static/app.css?v={{ static_v("app.css") }}">
+  {% block head %}{% endblock %}
+</head>
+<body class="min-h-screen">
+{% if u %}
+<header class="hdr sticky top-0 z-30">
+  <div class="max-w-[1440px] mx-auto px-4 h-14 flex items-center gap-3">
+    <a href="/" class="font-extrabold tracking-wider text-lg whitespace-nowrap text-white">PARKA <span class="font-medium tracking-normal text-sm opacity-80 ml-1">Depósito</span></a>
+    <nav id="nav" class="hidden lg:flex items-center gap-0 ml-3 text-sm overflow-x-auto">
+      {% include "_menu.html" %}
+    </nav>
+    <div class="ml-auto flex items-center gap-3">
+      <div class="text-right leading-tight hidden sm:block">
+        <div class="text-sm font-semibold text-white">{{ u.nombre }}</div>
+        <div class="text-xs text-white/70">{{ ROLES[u.rol] }}</div>
+      </div>
+      <a href="/logout" class="hdr-btn">Salir</a>
+      <button class="lg:hidden text-2xl px-1 text-white" onclick="document.getElementById('nav-mobile').classList.toggle('hidden')" aria-label="Menú">☰</button>
+    </div>
+  </div>
+  <nav id="nav-mobile" class="hidden lg:hidden border-t border-white/20 px-4 py-2 flex flex-col text-sm">
+    <span class="text-white/70 text-xs py-1">{{ u.nombre }} · {{ ROLES[u.rol] }}</span>
+    {% include "_menu.html" %}
+  </nav>
+</header>
+{% endif %}
+<main class="{% block main_class %}max-w-6xl mx-auto px-4 py-6{% endblock %}">
+{% block contenido %}{% endblock %}
+</main>
+<div id="toasts" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 items-center w-[92vw] max-w-md"></div>
+<script src="/static/app.js?v={{ static_v("app.js") }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

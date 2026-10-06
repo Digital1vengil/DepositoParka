@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block titulo %}Conexiones · {{ APP_NOMBRE }}{% endblock %}
+{% block contenido %}
+<h1 class="text-2xl font-bold mb-2">🔌 Conexiones</h1>
+<p class="text-sm text-zinc-500 mb-6">Se guardan en la base de esta app (no en el código). Las claves se muestran tapadas: dejá el campo como está para no cambiarlas.</p>
+
+<form class="card p-5 mb-5" onsubmit="event.preventDefault(); guardar(this, 'parkahub');">
+  <h2 class="text-lg font-bold mb-1">ParkaHub · datos de Mercado Libre y Tienda Nube</h2>
+  <p class="text-sm text-zinc-500 mb-4">ParkaHub ya tiene el token de ML y lo renueva solo. Esta app solo <b>lee</b> a través de él.
+    El Client ID y el Client Secret son un <i>service token</i> de Cloudflare Access que crea Martin
+    (Zero Trust → Access → Service Auth) y suma a la política de la app de ParkaHub.</p>
+  <div class="grid sm:grid-cols-3 gap-3">
+    <div><label class="lbl">Dirección de ParkaHub</label><input class="input" name="parkahub_url" value="{{ aj.parkahub_url.valor }}"></div>
+    <div><label class="lbl">Client ID {{ '✅' if aj.parkahub_client_id.cargado }}</label><input class="input" name="parkahub_client_id" value="{{ aj.parkahub_client_id.valor }}" autocomplete="off"></div>
+    <div><label class="lbl">Client Secret {{ '✅' if aj.parkahub_client_secret.cargado }}</label><input class="input" name="parkahub_client_secret" type="password" value="{{ aj.parkahub_client_secret.valor }}" autocomplete="off"></div>
+  </div>
+  <div class="flex gap-2 justify-end mt-4 items-center">
+    <span class="text-sm mr-auto" id="res-parkahub"></span>
+    <button type="button" class="btn btn-gris btn-chico" onclick="probar('parkahub')">Probar conexión</button>
+    <button class="btn btn-primario btn-chico">Guardar</button>
+  </div>
+</form>
+
+<form class="card p-5 mb-5" onsubmit="event.preventDefault(); guardar(this, 'odoo');">
+  <h2 class="text-lg font-bold mb-1">Odoo · artículos y códigos de barra</h2>
+  <p class="text-sm text-zinc-500 mb-4">La app <b>solo lee</b> los productos de Odoo (SKU, código de barras, color, talle, marca y stock) y los guarda
+    para que todas las secciones los usen. Usá un <b>usuario técnico</b> con permiso de Inventario (solo lectura) y su API key:
+    en Odoo, con ese usuario → Mis preferencias → Seguridad de la cuenta → <i>Nueva clave API</i>.</p>
+  <div class="grid sm:grid-cols-2 gap-3">
+    <div><label class="lbl">Dirección de Odoo</label><input class="input" name="odoo_url" value="{{ aj.odoo_url.valor }}"></div>
+    <div><label class="lbl">Base de datos</label><input class="input" name="odoo_db" value="{{ aj.odoo_db.valor }}"></div>
+    <div><label class="lbl">Usuario (email de ingreso) {{ '✅' if aj.odoo_usuario.cargado }}</label><input class="input" name="odoo_usuario" value="{{ aj.odoo_usuario.valor }}" autocomplete="off" placeholder="app-deposito@magontex.com.ar"></div>
+    <div><label class="lbl">API key {{ '✅' if aj.odoo_api_key.cargado }}</label><input class="input" name="odoo_api_key" type="password" value="{{ aj.odoo_api_key.valor }}" autocomplete="off"></div>
+    <div><label class="lbl">Sincronizar cada (minutos, 0 = solo a mano)</label><input class="input" name="odoo_sync_minutos" type="number" min="0" value="{{ aj.odoo_sync_minutos.valor }}"></div>
+  </div>
+  <div class="flex gap-2 justify-end mt-4 items-center">
+    <span class="text-sm mr-auto" id="res-odoo"></span>
+    <a href="/articulos" class="btn btn-gris btn-chico">Ir a Artículos</a>
+    <button type="button" class="btn btn-gris btn-chico" onclick="probar('odoo')">Probar conexión</button>
+    <button class="btn btn-primario btn-chico">Guardar</button>
+  </div>
+</form>
+
+<form class="card p-5 mb-5" onsubmit="event.preventDefault(); guardar(this, 'ecommerce');">
+  <h2 class="text-lg font-bold mb-1">Recolección Ecommerce · carpeta del día en Drive</h2>
+  <p class="text-sm text-zinc-500 mb-4">Apps Script <b>"Recolección Ecommerce — Backend Drive"</b>: crea cada día la carpeta
+    <i>Recolección Ecommerce/aaaa-mm-dd</i> donde se suben los Excel de ventas de ML y el CSV de Tienda Nube.
+    Pegá la URL de la implementación (Aplicación web) y el TOKEN que muestra <code>configurar()</code> en el registro de ejecución.</p>
+  <div class="grid sm:grid-cols-3 gap-3">
+    <div class="sm:col-span-2"><label class="lbl">URL de la aplicación web {{ '✅' if aj.re_url.cargado }}</label><input class="input" name="re_url" value="{{ aj.re_url.valor }}" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></div>
+    <div><label class="lbl">TOKEN {{ '✅' if aj.re_token.cargado }}</label><input class="input" name="re_token" type="password" value="{{ aj.re_token.valor }}" autocomplete="off"></div>
+  </div>
+  <div class="flex gap-2 justify-end mt-4 items-center">
+    <span class="text-sm mr-auto" id="res-ecommerce"></span>
+    <button type="button" class="btn btn-gris btn-chico" onclick="probar('ecommerce')">Probar conexión</button>
+    <button class="btn btn-primario btn-chico">Guardar</button>
+  </div>
+</form>
+
+<form class="card p-5" onsubmit="event.preventDefault(); guardar(this, 'gemini');">
+  <h2 class="text-lg font-bold mb-1">Gemini · asistente</h2>
+  <p class="text-sm text-zinc-500 mb-4">Clave gratis en <a class="underline text-violeta" href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> (la misma que usa el Panel PARKA sirve).</p>
+  <div class="grid sm:grid-cols-3 gap-3">
+    <div class="sm:col-span-2"><label class="lbl">Clave de Gemini {{ '✅' if aj.gemini_api_key.cargado }}</label><input class="input" name="gemini_api_key" type="password" value="{{ aj.gemini_api_key.valor }}" autocomplete="off"></div>
+    <div><label class="lbl">Modelo</label><input class="input" name="gemini_modelo" value="{{ aj.gemini_modelo.valor }}"></div>
+  </div>
+  <div class="flex gap-2 justify-end mt-4 items-center">
+    <span class="text-sm mr-auto" id="res-gemini"></span>
+    <button type="button" class="btn btn-gris btn-chico" onclick="probar('gemini')">Probar</button>
+    <button class="btn btn-primario btn-chico">Guardar</button>
+  </div>
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+async function guardar(f) {
+  const valores = {};
+  f.querySelectorAll('input[name]').forEach(i => valores[i.name] = i.value);
+  try { await api('/admin/api/conexiones', { json: { valores } }); toast('Guardado'); setTimeout(() => location.reload(), 600); }
+  catch (e) { toast(e.message, 'error'); }
+}
+async function probar(que) {
+  const el = document.getElementById('res-' + que);
+  el.textContent = 'Probando…'; el.className = 'text-sm mr-auto text-zinc-500';
+  try {
+    const r = await api('/admin/api/conexiones/probar/' + que, { method: 'POST' });
+    el.textContent = (r.ok ? '✅ ' : '❌ ') + r.mensaje;
+    el.className = 'text-sm mr-auto ' + (r.ok ? 'text-teal-600' : 'text-red-600');
+  } catch (e) { el.textContent = '❌ ' + e.message; el.className = 'text-sm mr-auto text-red-600'; }
+}
+</script>
+{% endblock %}

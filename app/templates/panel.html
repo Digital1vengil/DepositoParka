@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block titulo %}Panel PARKA · {{ APP_NOMBRE }}{% endblock %}
+{% block main_class %}max-w-none px-0 py-0{% endblock %}
+{% block contenido %}
+<div class="bg-white border-b border-zinc-700 px-4 py-2 flex flex-wrap items-center gap-3 text-sm">
+  <b class="text-violeta">📊 Panel PARKA</b>
+  <span class="chip chip-auto">🔒 Solo admin</span>
+  <span id="estado" class="text-zinc-500">Buscando el panel…</span>
+  <div class="ml-auto flex gap-2">
+    {% if puede_iniciar %}<button id="btn-iniciar" class="btn btn-turq btn-chico hidden" onclick="iniciar(this)">▶ Iniciar panel</button>{% endif %}
+    <a id="btn-pestana" class="btn btn-gris btn-chico" target="_blank">Abrir en pestaña nueva ↗</a>
+    {% if ngrok %}<a class="btn btn-gris btn-chico" href="{{ ngrok }}" target="_blank">Por internet (ngrok) ↗</a>{% endif %}
+  </div>
+</div>
+<div id="apagado" class="hidden max-w-lg mx-auto card p-8 text-center mt-10">
+  <div class="text-4xl mb-3">📊</div>
+  <h1 class="text-xl font-bold mb-2">El panel no está abierto</h1>
+  <p class="text-zinc-500 mb-5">Iniciá el Panel PARKA en esta PC{% if puede_iniciar %} con el botón de abajo{% else %} con <b>iniciar_panel.bat</b> (carpeta "nueva app"){% endif %} y se muestra acá.</p>
+  {% if puede_iniciar %}<button class="btn btn-primario" onclick="iniciar(this)">▶ Iniciar panel</button>{% endif %}
+</div>
+<iframe id="marco" class="hidden w-full border-0 bg-white" style="height: calc(100vh - 56px - 45px)" title="Panel PARKA"></iframe>
+{% endblock %}
+{% block scripts %}
+<script>
+const URL_PANEL = {{ panel_url|tojson }} || `${location.protocol}//${location.hostname}:{{ puerto }}`;
+document.getElementById('btn-pestana').href = URL_PANEL;
+let cargado = false;
+async function revisar() {
+  let d = { abierto: false };
+  try { d = await api('/panel/api/estado'); } catch {}
+  const est = document.getElementById('estado'), bi = document.getElementById('btn-iniciar');
+  if (d.abierto) {
+    est.innerHTML = '<span class="text-teal-600 font-semibold">● Abierto</span>';
+    document.getElementById('apagado').classList.add('hidden');
+    const m = document.getElementById('marco');
+    if (!cargado) { m.src = URL_PANEL; cargado = true; }
+    m.classList.remove('hidden');
+    if (bi) bi.classList.add('hidden');
+  } else {
+    est.innerHTML = '<span class="text-red-600 font-semibold">● Cerrado</span>';
+    document.getElementById('apagado').classList.remove('hidden');
+    document.getElementById('marco').classList.add('hidden');
+    cargado = false;
+    if (bi) bi.classList.remove('hidden');
+  }
+}
+async function iniciar(b) {
+  b.disabled = true;
+  try { await api('/panel/api/iniciar', { method: 'POST' }); toast('Iniciando el panel… (tarda unos segundos)', 'info', 5000); }
+  catch (e) { toast(e.message, 'error', 6000); }
+  setTimeout(() => { b.disabled = false; revisar(); }, 6000);
+}
+revisar(); setInterval(revisar, 10000);
+</script>
+{% endblock %}

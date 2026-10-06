@@ -1,0 +1,30 @@
+/* Tema PARKA para el scanner embebido: misma funcionalidad, colores del Panel PARKA
+   (celestes, blanco, violeta oscuro y turquesa). Se agrega al final de la página, sin tocar el scanner. */
+html, body { background: #eef6fd !important; color: #24163f; }
+.bg-forest-600, .bg-forest-700 { background-color: #3b1f6b !important; }
+.bg-forest-500 { background-color: #5b3a99 !important; }
+.active\:bg-forest-700:active, .active\:bg-forest-800:active { background-color: #5b3a99 !important; }
+.bg-forest-50, .active\:bg-forest-50:active { background-color: #efe9f8 !important; }
+.bg-forest-100 { background-color: #e3f1fd !important; }
+.text-forest-600, .text-forest-700 { color: #3b1f6b !important; }
+.border-forest-300 { border-color: #b9d2ec !important; }
+.border-forest-500, .border-forest-600 { border-color: #5b3a99 !important; }
+.focus\:border-forest-500:focus { border-color: #14b8a6 !important; }
+.focus\:ring-forest-500:focus, .ring-forest-500 { --tw-ring-color: #14b8a6 !important; }
+.bg-slate-50 { background-color: #f5f9fe !important; }
+.bg-slate-100, .hover\:bg-slate-100:hover, .active\:bg-slate-100:active { background-color: #e3f1fd !important; }
+.bg-slate-200, .active\:bg-slate-200:active { background-color: #d3e3f3 !important; }
+.border-slate-100, .border-slate-200 { border-color: #d3e3f3 !important; }
+.border-slate-300 { border-color: #b9d2ec !important; }
+.text-slate-800 { color: #24163f !important; }
+.text-slate-700 { color: #3a2d57 !important; }
+.text-slate-500, .text-slate-600 { color: #5d6a86 !important; }
+.bg-emerald-600 { background-color: #0d9488 !important; }
+.active\:bg-emerald-700:active { background-color: #0f766e !important; }
+.text-emerald-600, .text-green-600, .text-green-700 { color: #0f766e !important; }
+.bg-green-50 { background-color: #dff7f3 !important; }
+.bg-green-100 { background-color: #ccf2ec !important; }
+.border-green-200, .border-green-300 { border-color: #99e0d6 !important; }
+.bg-green-700 { background-color: #0d9488 !important; }
+.bg-white { background-color: #ffffff !important; }
+input:focus, select:focus, textarea:focus { outline-color: #14b8a6; }

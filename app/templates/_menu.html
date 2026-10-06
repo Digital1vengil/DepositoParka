@@ -1,0 +1,16 @@
+<a href="/" class="nav-link">Inicio</a>
+{% if 'despacho' in acc %}<a href="/despacho" class="nav-link">Despacho</a>{% endif %}
+{% if 'devoluciones' in acc %}<a href="/devoluciones" class="nav-link">Devoluciones</a>{% endif %}
+{% if 'conteo' in acc %}<a href="/conteo" class="nav-link">Conteo</a>{% endif %}
+{% if 'ecommerce' in acc %}<a href="/ecommerce" class="nav-link">Recolección Ecommerce</a>{% endif %}
+{% if 'mapeo' in acc %}<a href="/mapeo" class="nav-link">Mapeo</a>{% endif %}
+{% if 'tareas' in acc %}<a href="/tareas" class="nav-link">Tareas</a>{% endif %}
+{% if 'articulos' in acc %}<a href="/articulos" class="nav-link">Artículos</a>{% endif %}
+{% if 'supervision' in acc %}<a href="/supervision" class="nav-link">Supervisión</a>{% endif %}
+{% if 'cierre' in acc %}<a href="/admin/cierre" class="nav-link">Cierre</a>{% endif %}
+{% if 'ml' in acc %}<a href="/ml" class="nav-link">🛒 ML</a>{% endif %}
+{% if 'asistente' in acc %}<a href="/asistente" class="nav-link">🤖 Asistente</a>{% endif %}
+{% if u.es_admin %}<a href="/admin/usuarios" class="nav-link">Usuarios</a>
+<a href="/admin/secciones" class="nav-link">Secciones</a>
+<a href="/admin/conexiones" class="nav-link">Conexiones</a>{% endif %}
+{% if 'panel' in acc %}<a href="/panel" class="nav-link nav-panel">Panel PARKA</a>{% endif %}
